@@ -44,8 +44,10 @@ public class TransformXml {
              TransformerFactory xformer = TransformerFactory.newInstance();
 
             Source xslDoc=new StreamSource("src/main/java/com/itico/xmlchat/MessageXsltDesign.xsl");
-            Source xmlDoc=new StreamSource("src/main/java/com/itico/xmlchat/MessageXml.xml");
-
+            //Read From Old File That we created
+            //Source xmlDoc=new StreamSource("src/main/java/com/itico/xmlchat/MessageXml.xml");
+            //Read From New file the app create
+            Source xmlDoc=new StreamSource("src/main/java/com/itico/xmlchat/output.xml");
             String outputFileName="chat.html";
 
              OutputStream htmlFile=new FileOutputStream(outputFileName);
