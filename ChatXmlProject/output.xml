@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Messages>
+    <Message From="bassem" To="Mahrous">
+        <Font font-size="12" font-family="Ariel" font-type="Bold"></Font>
+        <color>Blue</color>
+        <Body>Bassem is Here</Body>
+        <Date>25-01-2018</Date>
+    </Message>
+    <Message From="Mahrous" To="Bassem" Time="">
+        <Font font-size="12" font-family="Ariel" font-type="Bold"></Font>
+        <color>Blue</color>
+        <Body>Mahrous is Here</Body>
+        <Date>25-01-2018</Date>
+    </Message>
+    <Message From="bassem" To="Mahrous">
+        <Font font-size="18" font-family="Ariel" font-type="italic"></Font>
+        <color>Blue</color>
+        <Body>Welcome To Test</Body>
+        <Date>25-01-2018</Date>
+    </Message>
+</Messages>
