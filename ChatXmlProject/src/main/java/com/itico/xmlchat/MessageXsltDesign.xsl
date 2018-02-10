@@ -17,30 +17,51 @@
     <xsl:template match="/">
         <html>
             <head>
-                <title>MessageXsltDesign.xsl</title>
+                <title>Message</title>
             </head>
             <body>
                 
                 <table border="1">
 
                     <tr>
-                        <th>Name</th>
-                        <th>Telephone</th>
-                        <th>Email</th>
+                        <td>Message From</td>
+                        <td>Message To</td>
+                        <td>Message Body</td>
+                        <td>Message Date</td>
+                        <td>Message Color</td>
+                        <td>Message FamilyFont</td>
+                        <td>Message FontSize</td>
+                        <td>Message FontType</td>
                     </tr>
 
-                    <xsl:for-each select="PHONEBOOK/PERSON">
+                    <xsl:for-each select="Messages/Message">
                         <xsl:sort/>
                         <tr>
                             <td>
-                                <xsl:value-of select="NAME"/>
+                                <xsl:value-of select="@From"/>
                             </td>
                             <td>
-                                <xsl:value-of select="TELEPHONE"/>
+                                <xsl:value-of select="@To"/>
                             </td>
                             <td>
-                                <xsl:value-of select="EMAIL"/>
+                                <xsl:value-of select="Body"/>
                             </td>
+                            <td>
+                                <xsl:value-of select="Date"/>
+                            </td>
+                            <td>
+                                <xsl:value-of select="color"/>
+                            </td>
+                            <td>
+                                <xsl:value-of select="Font/@font-family"/>
+                            </td>
+                            <td>
+                                <xsl:value-of select="Font/@font-size"/>
+                            </td>
+                            <td>
+                                <xsl:value-of select="Font/@font-type"/>
+                            </td>
+                            
                         </tr>
                     </xsl:for-each>
 
