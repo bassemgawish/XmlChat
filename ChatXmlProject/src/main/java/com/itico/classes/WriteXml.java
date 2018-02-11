@@ -23,7 +23,7 @@ import javax.xml.bind.Unmarshaller;
  *
  * @author bassem
  */
-public class ReadingXml {
+public class WriteXml {
 
     public static void Write(MessageType saveMsg) {
         try {
@@ -46,9 +46,9 @@ public class ReadingXml {
             marsh.marshal(msgElement, new FileOutputStream("src/main/java/com/itico/xmlchat/output.xml"));
 
         } catch (JAXBException ex) {
-            Logger.getLogger(ReadingXml.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(WriteXml.class.getName()).log(Level.SEVERE, null, ex);
         } catch (FileNotFoundException ex) {
-            Logger.getLogger(ReadingXml.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(WriteXml.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -81,7 +81,7 @@ public class ReadingXml {
             //marsh.marshal(msgElement, new FileOutputStream("src/main/java/com/itico/xmlchat/output.xml"));
 
         } catch (JAXBException ex) {
-            Logger.getLogger(ReadingXml.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(WriteXml.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
