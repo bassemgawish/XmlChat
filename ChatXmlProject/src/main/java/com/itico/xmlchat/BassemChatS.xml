@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Messages>
+    <Message From="Ahmed" To="Mohamed">
+        <Font font-size="61" font-family="Ariel" font-type="Italic"/>
+        <color>Blue</color>
+        <Body>This is For Just testing The Funtion of the Write Method</Body>
+        <Date>11/2/2018</Date>
+    </Message>
+</Messages>

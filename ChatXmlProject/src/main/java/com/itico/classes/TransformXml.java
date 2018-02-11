@@ -7,7 +7,7 @@ package com.itico.classes;
 
 
 
-import com.sun.xml.internal.org.jvnet.staxex.Base64EncoderStream;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -36,19 +36,20 @@ import org.xml.sax.SAXException;
  */
 public class TransformXml {
     
-     public static void main(String[] args) {
-         try {
-             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-             DocumentBuilder builder = factory.newDocumentBuilder();
-             Document document = builder.parse(new InputSource(new InputStreamReader(new FileInputStream("src/main/java/com/itico/xmlchat/MessageXml.xml"))));
+    public static void transformToHtml()
+    {
+        try {
+             DocumentBuilderFactory docBuildfactory = DocumentBuilderFactory.newInstance();
+             DocumentBuilder docBuilder = docBuildfactory.newDocumentBuilder();
+             Document document = docBuilder.parse(new InputSource(new InputStreamReader(new FileInputStream("src/main/resources/xmlResources/MessageXml.xml"))));
              TransformerFactory xformer = TransformerFactory.newInstance();
 
-            Source xslDoc=new StreamSource("src/main/java/com/itico/xmlchat/MessageXsltDesign.xsl");
+            Source xslDoc=new StreamSource("src/main/resources/xmlResources/MessageXsltDesign.xsl");
             //Read From Old File That we created
             //Source xmlDoc=new StreamSource("src/main/java/com/itico/xmlchat/MessageXml.xml");
             //Read From New file the app create
             Source xmlDoc=new StreamSource("src/main/java/com/itico/xmlchat/output.xml");
-            String outputFileName="chat.html";
+            String outputFileName="baschat.html";
 
              OutputStream htmlFile=new FileOutputStream(outputFileName);
              Transformer trasform=xformer.newTransformer(xslDoc);
@@ -64,5 +65,10 @@ public class TransformXml {
          } catch (TransformerException ex) {
              Logger.getLogger(TransformXml.class.getName()).log(Level.SEVERE, null, ex);
          }
+    }
+    
+    
+     public static void main(String[] args) {
+         transformToHtml();
     }
 }

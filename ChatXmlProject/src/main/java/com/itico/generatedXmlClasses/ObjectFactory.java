@@ -6,7 +6,7 @@
 //
 
 
-package com.itico.generated;
+package com.itico.generatedXmlClasses;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlElementDecl;

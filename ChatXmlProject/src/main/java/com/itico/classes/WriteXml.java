@@ -5,11 +5,17 @@
  */
 package com.itico.classes;
 
-import com.itico.generated.*;
-import com.itico.generated.ObjectFactory;
+import com.itico.generatedXmlClasses.MessagesType;
+import com.itico.generatedXmlClasses.FontType;
+import com.itico.generatedXmlClasses.MessageType;
+import com.itico.generatedXmlClasses.ObjectFactory;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,6 +24,19 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 /**
  *
@@ -25,9 +44,9 @@ import javax.xml.bind.Unmarshaller;
  */
 public class WriteXml {
 
-    public static void Write(MessageType saveMsg) {
+    public static void Write(MessageType saveMsg ,String locationUrl ,  String fileName) {
         try {
-            JAXBContext context = JAXBContext.newInstance("com.itico.generated");
+            JAXBContext context = JAXBContext.newInstance("com.itico.generatedXmlClasses");
             
             ObjectFactory factory = new ObjectFactory();
             MessagesType fullMsg = factory.createMessagesType();
@@ -43,7 +62,9 @@ public class WriteXml {
             JAXBElement msgElement = factory.createMessages(fullMsg);
             Marshaller marsh = context.createMarshaller();
             marsh.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-            marsh.marshal(msgElement, new FileOutputStream("src/main/java/com/itico/xmlchat/output.xml"));
+            marsh.marshal(msgElement, new FileOutputStream(locationUrl+"/"+fileName+".xml"));
+            
+            transformToHtml(locationUrl,fileName);
 
         } catch (JAXBException ex) {
             Logger.getLogger(WriteXml.class.getName()).log(Level.SEVERE, null, ex);
@@ -53,39 +74,73 @@ public class WriteXml {
 
     }
 
-    public static void readXml() {
+//    public static void readXml() {
+//        try {
+//            JAXBContext context = JAXBContext.newInstance("com.itico.generated");
+//            Unmarshaller unmarsh = context.createUnmarshaller();
+//            JAXBElement MessageJaxb = (JAXBElement) unmarsh.unmarshal(new File("src/main/java/com/itico/xmlchat/MessageXml.xml"));
+//             MessagesType fullMsg = (MessagesType) MessageJaxb.getValue();
+//            
+//            List<MessageType> chatMessage = fullMsg.getMessage();
+//            
+//
+//            for (MessageType msg : chatMessage) {
+//                System.out.println("Message from " + msg.getFrom());
+//                System.out.println("Message To " + msg.getTo());
+//                System.out.println("Message body " + msg.getBody());
+//                System.out.println("Message date " + msg.getDate());
+//                System.out.println("Message color " + msg.getColor());
+//                System.out.println("Message fontfamily " + msg.getFont().getFontFamily());
+//                System.out.println("Message fontsize " + msg.getFont().getFontSize());
+//                System.out.println("Message fonttype " + msg.getFont().getFontType());
+//                System.out.println("----------------------------");
+//
+//            }
+//            //JAXBElement msgElement = factory.createMessages(fullMsg);
+//            //Marshaller marsh = context.createMarshaller();
+//            //marsh.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+//            //marsh.marshal(msgElement, new FileOutputStream("src/main/java/com/itico/xmlchat/output.xml"));
+//
+//        } catch (JAXBException ex) {
+//            Logger.getLogger(WriteXml.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//
+//    }
+
+    
+    private static void transformToHtml(String LocationUrl , String fileName)
+    {
         try {
-            JAXBContext context = JAXBContext.newInstance("com.itico.generated");
-            Unmarshaller unmarsh = context.createUnmarshaller();
-            JAXBElement MessageJaxb = (JAXBElement) unmarsh.unmarshal(new File("src/main/java/com/itico/xmlchat/MessageXml.xml"));
-             MessagesType fullMsg = (MessagesType) MessageJaxb.getValue();
-            
-            List<MessageType> chatMessage = fullMsg.getMessage();
-            
+             DocumentBuilderFactory docBuildfactory = DocumentBuilderFactory.newInstance();
+             DocumentBuilder docBuilder = docBuildfactory.newDocumentBuilder();
+             Document document = docBuilder.parse(new InputSource(new InputStreamReader(new FileInputStream(LocationUrl+"/"+fileName+".xml"))));
+             TransformerFactory xformer = TransformerFactory.newInstance();
 
-            for (MessageType msg : chatMessage) {
-                System.out.println("Message from " + msg.getFrom());
-                System.out.println("Message To " + msg.getTo());
-                System.out.println("Message body " + msg.getBody());
-                System.out.println("Message date " + msg.getDate());
-                System.out.println("Message color " + msg.getColor());
-                System.out.println("Message fontfamily " + msg.getFont().getFontFamily());
-                System.out.println("Message fontsize " + msg.getFont().getFontSize());
-                System.out.println("Message fonttype " + msg.getFont().getFontType());
-                System.out.println("----------------------------");
+            Source xslDoc=new StreamSource("src/main/resources/xmlResources/MessageXsltDesign.xsl");
+            //Read From Old File That we created
+            //Source xmlDoc=new StreamSource("src/main/java/com/itico/xmlchat/MessageXml.xml");
+            //Read From New file the app create
+            Source xmlDoc=new StreamSource("src/main/java/com/itico/xmlchat/output.xml");
+            String outputFileName=LocationUrl+"/"+fileName +".html";
 
-            }
-            //JAXBElement msgElement = factory.createMessages(fullMsg);
-            //Marshaller marsh = context.createMarshaller();
-            //marsh.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-            //marsh.marshal(msgElement, new FileOutputStream("src/main/java/com/itico/xmlchat/output.xml"));
-
-        } catch (JAXBException ex) {
-            Logger.getLogger(WriteXml.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
+             OutputStream htmlFile=new FileOutputStream(outputFileName);
+             Transformer trasform=xformer.newTransformer(xslDoc);
+            trasform.transform(xmlDoc, new StreamResult(htmlFile));
+         } catch (ParserConfigurationException | FileNotFoundException ex) {
+             Logger.getLogger(TransformXml.class.getName()).log(Level.SEVERE, null, ex);
+         } catch (SAXException ex) {
+             Logger.getLogger(TransformXml.class.getName()).log(Level.SEVERE, null, ex);
+         } catch (IOException ex) {
+             Logger.getLogger(TransformXml.class.getName()).log(Level.SEVERE, null, ex);
+         } catch (TransformerConfigurationException ex) {
+             Logger.getLogger(TransformXml.class.getName()).log(Level.SEVERE, null, ex);
+         } catch (TransformerException ex) {
+             Logger.getLogger(TransformXml.class.getName()).log(Level.SEVERE, null, ex);
+         }
     }
-
+    
+    
+    
     public static void main(String[] args) {
         
         //Just For Test
@@ -100,7 +155,7 @@ public class WriteXml {
         font.setFontSize("61");
         font.setFontType("Italic");
         testMsg.setFont(font);
-        Write(testMsg);
+        Write(testMsg ,"M:\\Gawish", "BassemChatS");
         //readXml();
         
         

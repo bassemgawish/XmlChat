@@ -6,7 +6,7 @@
 //
 
 
-package com.itico.generated;
+package com.itico.generatedXmlClasses;
 
 import java.util.ArrayList;
 import java.util.List;

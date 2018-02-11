@@ -6,7 +6,7 @@
 //
 
 
-package com.itico.generated;
+package com.itico.generatedXmlClasses;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
