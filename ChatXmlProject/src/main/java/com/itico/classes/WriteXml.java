@@ -16,6 +16,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -44,33 +45,40 @@ import org.xml.sax.SAXException;
  */
 public class WriteXml {
 
-    public static void Write(MessageType saveMsg ,String locationUrl ,  String fileName) {
+     public static void Write(List<MessageType> msgsList , File outputFile) {
         try {
             JAXBContext context = JAXBContext.newInstance("com.itico.generatedXmlClasses");
             
             ObjectFactory factory = new ObjectFactory();
-            MessagesType fullMsg = factory.createMessagesType();
-           
-            MessageType newMessage = factory.createMessageType();
-            newMessage.setFrom(saveMsg.getFrom());
-            newMessage.setTo(saveMsg.getTo());
-            newMessage.setBody(saveMsg.getBody());
-            newMessage.setDate(saveMsg.getDate());
-            newMessage.setColor(saveMsg.getColor());
-            newMessage.setFont(saveMsg.getFont());
-            fullMsg.getMessage().add(newMessage);
-            JAXBElement msgElement = factory.createMessages(fullMsg);
+            MessagesType fullMsgNode = factory.createMessagesType();
+           for(MessageType saveMsg: msgsList)
+           {
+               MessageType newMessage = factory.createMessageType();
+               newMessage.setFrom(saveMsg.getFrom());
+               newMessage.setTo(saveMsg.getTo());
+               newMessage.setBody(saveMsg.getBody());
+               newMessage.setDate(saveMsg.getDate());
+               newMessage.setColor(saveMsg.getColor());
+               newMessage.setFont(saveMsg.getFont());
+               fullMsgNode.getMessage().add(newMessage);
+           }
+            
+            JAXBElement msgElement = factory.createMessages(fullMsgNode);
             Marshaller marsh = context.createMarshaller();
             marsh.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-            marsh.marshal(msgElement, new FileOutputStream(locationUrl+"/"+fileName+".xml"));
-            
-            transformToHtml(locationUrl,fileName);
+            marsh.setProperty("com.sun.xml.internal.bind.xmlHeaders", "<?xml-stylesheet type='text/xsl' href='"+outputFile.getParent()+"/MessageXsltDesign.xsl' ?>");
+            marsh.setProperty(Marshaller.JAXB_NO_NAMESPACE_SCHEMA_LOCATION, outputFile.getParent() + "/MessageSchema.xsd");
+            //String xmlFileName = locationUrl + "/" + fileName+ ".xml";
+//            marsh.marshal(msgElement, new FileOutputStream(xmlFileName));
+            FileOutputStream xmlFileNew  =new FileOutputStream(outputFile);
+             marsh.marshal(msgElement,xmlFileNew);
+            //transformToHtml(File xmlFile);
 
         } catch (JAXBException ex) {
             Logger.getLogger(WriteXml.class.getName()).log(Level.SEVERE, null, ex);
         } catch (FileNotFoundException ex) {
-            Logger.getLogger(WriteXml.class.getName()).log(Level.SEVERE, null, ex);
-        }
+             Logger.getLogger(WriteXml.class.getName()).log(Level.SEVERE, null, ex);
+         } //catch (FileNotFoundException ex) {
 
     }
 
@@ -108,58 +116,54 @@ public class WriteXml {
 //    }
 
     
-    private static void transformToHtml(String LocationUrl , String fileName)
-    {
-        try {
-             DocumentBuilderFactory docBuildfactory = DocumentBuilderFactory.newInstance();
-             DocumentBuilder docBuilder = docBuildfactory.newDocumentBuilder();
-             Document document = docBuilder.parse(new InputSource(new InputStreamReader(new FileInputStream(LocationUrl+"/"+fileName+".xml"))));
-             TransformerFactory xformer = TransformerFactory.newInstance();
-
-            Source xslDoc=new StreamSource("src/main/resources/xmlResources/MessageXsltDesign.xsl");
-            //Read From Old File That we created
-            //Source xmlDoc=new StreamSource("src/main/java/com/itico/xmlchat/MessageXml.xml");
-            //Read From New file the app create
-            Source xmlDoc=new StreamSource("src/main/java/com/itico/xmlchat/output.xml");
-            String outputFileName=LocationUrl+"/"+fileName +".html";
-
-             OutputStream htmlFile=new FileOutputStream(outputFileName);
-             Transformer trasform=xformer.newTransformer(xslDoc);
-            trasform.transform(xmlDoc, new StreamResult(htmlFile));
-         } catch (ParserConfigurationException | FileNotFoundException ex) {
-             Logger.getLogger(TransformXml.class.getName()).log(Level.SEVERE, null, ex);
-         } catch (SAXException ex) {
-             Logger.getLogger(TransformXml.class.getName()).log(Level.SEVERE, null, ex);
-         } catch (IOException ex) {
-             Logger.getLogger(TransformXml.class.getName()).log(Level.SEVERE, null, ex);
-         } catch (TransformerConfigurationException ex) {
-             Logger.getLogger(TransformXml.class.getName()).log(Level.SEVERE, null, ex);
-         } catch (TransformerException ex) {
-             Logger.getLogger(TransformXml.class.getName()).log(Level.SEVERE, null, ex);
-         }
-    }
-    
-    
-    
-    public static void main(String[] args) {
-        
-        //Just For Test
-        MessageType testMsg = new MessageType();
-        testMsg.setFrom("Ahmed");
-        testMsg.setTo("Mohamed");
-        testMsg.setBody("This is For Just testing The Funtion of the Write Method");
-        testMsg.setDate("11/2/2018");
-        testMsg.setColor("Blue");
-        FontType font =new FontType();
-        font.setFontFamily("Ariel");
-        font.setFontSize("61");
-        font.setFontType("Italic");
-        testMsg.setFont(font);
-        Write(testMsg ,"M:\\Gawish", "BassemChatS");
-        //readXml();
-        
-        
-        
-    }
+//    private static void transformToHtml(String LocationUrl , String fileName , String xmlFile)
+//    {
+//        
+//        try {
+//            DocumentBuilderFactory docBuildfactory = DocumentBuilderFactory.newInstance();
+//            DocumentBuilder docBuilder = docBuildfactory.newDocumentBuilder();
+//            Document document = docBuilder.parse(new InputSource(new InputStreamReader(new FileInputStream(LocationUrl+"/"+fileName+".xml"))));
+//            TransformerFactory xformer = TransformerFactory.newInstance();
+//            
+//            Source xslDoc=new StreamSource("src/main/resources/xmlResources/MessageXsltDesign.xsl");
+//            //Read From Old File That we created
+//            //Source xmlDoc=new StreamSource("src/main/java/com/itico/xmlchat/MessageXml.xml");
+//            //Read From New file the app create
+//            Source xmlDoc = new StreamSource(xmlFile);
+//            String outputFileName = LocationUrl+"/"+fileName +".html";
+//            
+//            OutputStream htmlFile=new FileOutputStream(outputFileName);
+//            Transformer trasform=xformer.newTransformer(xslDoc);
+//            trasform.transform(xmlDoc, new StreamResult(htmlFile));
+//        } catch (ParserConfigurationException | SAXException | IOException | TransformerException ex) {
+//            Logger.getLogger(WriteXml.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//         
+//    }
+//    
+//    
+//    public static void main(String[] args) {
+//        
+//        //Just For Test
+//        MessageType testMsg = new MessageType();
+//        testMsg.setFrom("Ahmed");
+//        testMsg.setTo("Mohamed");
+//        testMsg.setBody("This is For Just testing The Funtion of the Write Method");
+//        testMsg.setDate("11/2/2018");
+//        testMsg.setColor("Blue");
+//        FontType font =new FontType();
+//        font.setFontFamily("Ariel");
+//        font.setFontSize("61");
+//        font.setFontType("Italic");
+//        testMsg.setFont(font);
+//        List<MessageType> messageList = new ArrayList<>();
+//        messageList.add(testMsg);
+//        messageList.add(testMsg);
+//        Write(messageList ,"M:\\Gawish", "BassemChatS");
+//        //readXml();
+//        
+//        
+//        
+//    }
 
 }
