@@ -14,6 +14,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -45,12 +46,13 @@ import org.xml.sax.SAXException;
  */
 public class WriteXml {
 
-     public static void Write(List<MessageType> msgsList , File outputFile) {
+     public void Write(List<MessageType> msgsList , File outputFile , String ownerName) {
         try {
             JAXBContext context = JAXBContext.newInstance("com.itico.generatedXmlClasses");
             
             ObjectFactory factory = new ObjectFactory();
             MessagesType fullMsgNode = factory.createMessagesType();
+            fullMsgNode.setOwner(ownerName);
            for(MessageType saveMsg: msgsList)
            {
                MessageType newMessage = factory.createMessageType();
@@ -71,99 +73,49 @@ public class WriteXml {
             //String xmlFileName = locationUrl + "/" + fileName+ ".xml";
 //            marsh.marshal(msgElement, new FileOutputStream(xmlFileName));
             FileOutputStream xmlFileNew  =new FileOutputStream(outputFile);
-             marsh.marshal(msgElement,xmlFileNew);
+            //saveFileInternal(getClass().getResource("MessageXsltDesign.xsl").openStream(), outputFile.getParent()+outputFile.getName()+".xsl");
+            //saveFileInternal(getClass().getResource("MessageXsltDesign.xsl").openStream(), outputFile.getParent()+outputFile.getName()+".xsl");
+            marsh.marshal(msgElement,xmlFileNew);
             //transformToHtml(File xmlFile);
 
         } catch (JAXBException ex) {
             Logger.getLogger(WriteXml.class.getName()).log(Level.SEVERE, null, ex);
         } catch (FileNotFoundException ex) {
              Logger.getLogger(WriteXml.class.getName()).log(Level.SEVERE, null, ex);
+         } catch (IOException ex) {
+             Logger.getLogger(WriteXml.class.getName()).log(Level.SEVERE, null, ex);
          } //catch (FileNotFoundException ex) {
 
     }
 
-//    public static void readXml() {
-//        try {
-//            JAXBContext context = JAXBContext.newInstance("com.itico.generated");
-//            Unmarshaller unmarsh = context.createUnmarshaller();
-//            JAXBElement MessageJaxb = (JAXBElement) unmarsh.unmarshal(new File("src/main/java/com/itico/xmlchat/MessageXml.xml"));
-//             MessagesType fullMsg = (MessagesType) MessageJaxb.getValue();
-//            
-//            List<MessageType> chatMessage = fullMsg.getMessage();
-//            
-//
-//            for (MessageType msg : chatMessage) {
-//                System.out.println("Message from " + msg.getFrom());
-//                System.out.println("Message To " + msg.getTo());
-//                System.out.println("Message body " + msg.getBody());
-//                System.out.println("Message date " + msg.getDate());
-//                System.out.println("Message color " + msg.getColor());
-//                System.out.println("Message fontfamily " + msg.getFont().getFontFamily());
-//                System.out.println("Message fontsize " + msg.getFont().getFontSize());
-//                System.out.println("Message fonttype " + msg.getFont().getFontType());
-//                System.out.println("----------------------------");
-//
-//            }
-//            //JAXBElement msgElement = factory.createMessages(fullMsg);
-//            //Marshaller marsh = context.createMarshaller();
-//            //marsh.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-//            //marsh.marshal(msgElement, new FileOutputStream("src/main/java/com/itico/xmlchat/output.xml"));
-//
-//        } catch (JAXBException ex) {
-//            Logger.getLogger(WriteXml.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//
-//    }
-
-    
-//    private static void transformToHtml(String LocationUrl , String fileName , String xmlFile)
-//    {
-//        
-//        try {
-//            DocumentBuilderFactory docBuildfactory = DocumentBuilderFactory.newInstance();
-//            DocumentBuilder docBuilder = docBuildfactory.newDocumentBuilder();
-//            Document document = docBuilder.parse(new InputSource(new InputStreamReader(new FileInputStream(LocationUrl+"/"+fileName+".xml"))));
-//            TransformerFactory xformer = TransformerFactory.newInstance();
-//            
-//            Source xslDoc=new StreamSource("src/main/resources/xmlResources/MessageXsltDesign.xsl");
-//            //Read From Old File That we created
-//            //Source xmlDoc=new StreamSource("src/main/java/com/itico/xmlchat/MessageXml.xml");
-//            //Read From New file the app create
-//            Source xmlDoc = new StreamSource(xmlFile);
-//            String outputFileName = LocationUrl+"/"+fileName +".html";
-//            
-//            OutputStream htmlFile=new FileOutputStream(outputFileName);
-//            Transformer trasform=xformer.newTransformer(xslDoc);
-//            trasform.transform(xmlDoc, new StreamResult(htmlFile));
-//        } catch (ParserConfigurationException | SAXException | IOException | TransformerException ex) {
-//            Logger.getLogger(WriteXml.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//         
-//    }
-//    
-//    
-//    public static void main(String[] args) {
-//        
-//        //Just For Test
-//        MessageType testMsg = new MessageType();
-//        testMsg.setFrom("Ahmed");
-//        testMsg.setTo("Mohamed");
-//        testMsg.setBody("This is For Just testing The Funtion of the Write Method");
-//        testMsg.setDate("11/2/2018");
-//        testMsg.setColor("Blue");
-//        FontType font =new FontType();
-//        font.setFontFamily("Ariel");
-//        font.setFontSize("61");
-//        font.setFontType("Italic");
-//        testMsg.setFont(font);
-//        List<MessageType> messageList = new ArrayList<>();
-//        messageList.add(testMsg);
-//        messageList.add(testMsg);
-//        Write(messageList ,"M:\\Gawish", "BassemChatS");
-//        //readXml();
-//        
-//        
-//        
-//    }
-
+     public static void saveFileInternal(InputStream is, String path) 
+     {
+        Thread threadOne = new Thread( () -> {
+        
+            FileOutputStream os = null;
+            try {
+                File newFile = new File(path);
+                os = new FileOutputStream(newFile);
+                int readByte ; 
+                while((readByte=is.read())!= -1){
+                    os.write(readByte);
+                }
+            } catch (FileNotFoundException ex) {
+                ex.printStackTrace();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            } finally {
+                try {
+                    os.close();
+                } catch (IOException ex) {
+                  ex.printStackTrace();
+                }
+            }
+        
+        });
+         
+        threadOne.start();
+          
+      
+     }
 }

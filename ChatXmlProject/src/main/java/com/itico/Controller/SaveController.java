@@ -30,8 +30,8 @@ public class SaveController {
     void saveFile(ActionEvent event) {
         
          MessageType testMsg = new MessageType();
-        testMsg.setFrom("Ahmed");
-        testMsg.setTo("Mohamed");
+        testMsg.setFrom("Ahmed@gmail.com");
+        testMsg.setTo("Mohamed@gmail.com");
         testMsg.setBody("This is gui testtttttttttt Just testing The Funtion of the Write Method");
         testMsg.setDate("11/2/2018");
         testMsg.setColor("Blue");
@@ -49,7 +49,7 @@ public class SaveController {
         fileChooser.setTitle("save Resource File");
         
         File fileChoosen = fileChooser.showSaveDialog(saveBtn.getScene().getWindow());
-        xmlwrite.Write(messageList ,fileChoosen);
+        xmlwrite.Write(messageList ,fileChoosen , "Ahmed@gmail.com");
 //        System.out.println("file name :  " + fileChoosen.getAbsolutePath());
 //        System.out.println("file name :  " + fileChoosen.getParent());
 //        System.out.println("file parent :  " + fileChoosen.getParentFile().getAbsolutePath());

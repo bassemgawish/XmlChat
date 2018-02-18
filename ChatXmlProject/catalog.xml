@@ -2,4 +2,5 @@
 <catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="system">
     <system systemId="file:/E:/Iti/Java/Project/XmlChat/ChatXmlProject/src/main/java/com/itico/xmlchat/MessageSchema.xsd" uri="src/main/resources/jaxb/Binding1/MessageSchema.xsd"/>
     <system systemId="file:/E:/Iti/Java/Project/XmlChat/ChatXmlProject/src/main/resources/jaxb/Binding1/MessageSchema.xsd" uri="src/main/resources/jaxb/abc/MessageSchema.xsd"/>
+    <system systemId="file:/M:/Gawish/NetBeansProjects/XmlChat/ChatXmlProject/src/main/resources/xmlResources/MessageSchema.xsd" uri="src/main/resources/jaxb/XmlBinding/MessageSchema.xsd"/>
 </catalog>

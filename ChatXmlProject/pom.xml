@@ -78,6 +78,19 @@
                         </configuration>
                         <id>jaxb-generate-abc</id>
                     </execution>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <schemaIncludes>
+                                <include>jaxb/XmlBinding/*.xsd</include>
+                            </schemaIncludes>
+                            <episodeFile>${project.build.directory}/generated-sources/xjc/META-INF/jaxb-XmlBinding.episode</episodeFile>
+                            <generatePackage>com.itico.generatedXmlClasses</generatePackage>
+                        </configuration>
+                        <id>jaxb-generate-XmlBinding</id>
+                    </execution>
                 </executions>
                 <configuration>
                     <catalog>src/main/resources/jaxb/catalog.xml</catalog>
